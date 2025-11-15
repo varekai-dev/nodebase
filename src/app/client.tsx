@@ -1,3 +1,5 @@
+// used as example for fetching data with trpc client
+
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";

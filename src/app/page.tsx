@@ -1,4 +1,4 @@
-// Fetch with client component
+// 1. Fetch with client component
 
 // "use client";
 
@@ -21,7 +21,7 @@
 
 // export default Page;
 
-// Fetch with server component
+// 2. Fetch with server component
 
 // import { Button } from "@/components/ui/button";
 // import { caller } from "@/trpc/server";
@@ -39,25 +39,44 @@
 
 // export default Page;
 
-// Fetch with trpc client
+// 3. Fetch with trpc client
 
-import { getQueryClient, trpc } from "@/trpc/server";
-import { Client } from "./client";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { Suspense } from "react";
+// import { getQueryClient, trpc } from "@/trpc/server";
+// import { Client } from "./client";
+// import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+// import { Suspense } from "react";
+
+// const Page = async () => {
+//   const queryClient = getQueryClient();
+
+//   void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+
+//   return (
+//     <div className="min-h-screen min-w-screen flex items-center justify-center">
+//       <HydrationBoundary state={dehydrate(queryClient)}>
+//         <Suspense fallback={<div>Loading...</div>}>
+//           <Client />
+//         </Suspense>
+//       </HydrationBoundary>
+//     </div>
+//   );
+// };
+
+// export default Page;
+
+import { requireAuth } from "@/lib/auth-utils";
+import { caller } from "@/trpc/server";
+import { LogoutButton } from "./logout";
 
 const Page = async () => {
-  const queryClient = getQueryClient();
-
-  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
+  await requireAuth();
+  const data = await caller.getUsers();
 
   return (
-    <div className="min-h-screen min-w-screen flex items-center justify-center">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Client />
-        </Suspense>
-      </HydrationBoundary>
+    <div className="min-h-screen min-w-screen flex items-center justify-center flex-col gap-y-6">
+      <div>{JSON.stringify(data)}</div>
+      <LogoutButton />
+      protected server component
     </div>
   );
 };
