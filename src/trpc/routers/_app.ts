@@ -4,10 +4,15 @@ import prisma from "@/lib/db";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const appRouter = createTRPCRouter({
   testAi: protectedProcedure.mutation(async ({ ctx }) => {
-    const response = await inngest.send({
+    // throw new TRPCError({
+    //   code: "INTERNAL_SERVER_ERROR",
+    //   message: "Something went wrong",
+    // });
+    await inngest.send({
       name: "execute/ai",
     });
     return {
