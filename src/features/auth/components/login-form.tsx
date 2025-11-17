@@ -24,8 +24,6 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 
 const loginSchema = z.object({
@@ -69,6 +67,24 @@ export const LoginForm = () => {
       console.error(error);
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    await authClient.signIn.social(
+      {
+        provider: "google",
+      },
+      {
+        onSuccess: () => {
+          toast.success("Logged in successfully");
+          router.push("/");
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      }
+    );
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
@@ -102,6 +118,7 @@ export const LoginForm = () => {
                     className="w-full"
                     type="button"
                     disabled={isPending}
+                    onClick={handleGoogleSignIn}
                   >
                     <Image
                       src="./logos/google.svg"
