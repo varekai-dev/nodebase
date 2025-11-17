@@ -82,6 +82,9 @@ const Page = () => {
       onSuccess: () => {
         toast.success("Job queued");
       },
+      onError: (error) => {
+        toast.error("Something went wrong");
+      },
     })
   );
 
