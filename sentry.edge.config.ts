@@ -5,21 +5,24 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-Sentry.init({
-  dsn: "https://677bd6b259a278d0889dcdc8518df768@o4510380952649728.ingest.de.sentry.io/4510380956254288",
+// Only initialize Sentry in production
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({
+    dsn: "https://677bd6b259a278d0889dcdc8518df768@o4510380952649728.ingest.de.sentry.io/4510380956254288",
 
-  integrations: [
-    // send console.log, console.warn, and console.error calls as logs to Sentry
-    Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
-  ],
+    integrations: [
+      // send console.log, console.warn, and console.error calls as logs to Sentry
+      Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
+    ],
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+    // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
+    tracesSampleRate: 1,
 
-  // Enable logs to be sent to Sentry
-  enableLogs: true,
+    // Enable logs to be sent to Sentry
+    enableLogs: true,
 
-  // Enable sending user PII (Personally Identifiable Information)
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
-});
+    // Enable sending user PII (Personally Identifiable Information)
+    // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
+    sendDefaultPii: true,
+  });
+}
