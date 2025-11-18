@@ -6,7 +6,7 @@ export const authClient = createAuthClient({
   plugins: [
     polarClient(),
     oneTapClient({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
       // Optional client configuration:
       autoSelect: false,
       cancelOnTapOutside: true,
