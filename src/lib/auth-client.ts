@@ -3,10 +3,11 @@ import { polarClient } from "@polar-sh/better-auth";
 import { oneTapClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
   plugins: [
     polarClient(),
     oneTapClient({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
       // Optional client configuration:
       autoSelect: false,
       cancelOnTapOutside: true,
