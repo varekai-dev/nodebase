@@ -3,17 +3,15 @@
 import { authClient } from "@/lib/auth-client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export const OneTap = () => {
+  const router = useRouter();
   useEffect(() => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    console.log("Initializing One Tap");
-    console.log("Client ID present:", !!clientId);
-    
     authClient.oneTap({
       fetchOptions: {
         onSuccess: () => {
-          console.log("One Tap success");
+          router.push("/");
         },
         onError: (error) => {
           console.error("One Tap error", error);
