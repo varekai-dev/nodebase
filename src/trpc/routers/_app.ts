@@ -1,5 +1,9 @@
 import { inngest } from "@/inngest/client";
-import { protectedProcedure, createTRPCRouter } from "../init";
+import {
+  protectedProcedure,
+  createTRPCRouter,
+  premiumProcedure,
+} from "../init";
 import prisma from "@/lib/db";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
@@ -7,7 +11,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 export const appRouter = createTRPCRouter({
-  testAi: protectedProcedure.mutation(async ({ ctx }) => {
+  testAi: premiumProcedure.mutation(async ({ ctx }) => {
     // throw new TRPCError({
     //   code: "INTERNAL_SERVER_ERROR",
     //   message: "Something went wrong",
