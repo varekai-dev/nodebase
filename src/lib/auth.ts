@@ -6,6 +6,7 @@ import { polar, checkout, portal } from "@polar-sh/better-auth";
 import { oneTap } from "better-auth/plugins";
 
 export const auth = betterAuth({
+  debug: true,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
