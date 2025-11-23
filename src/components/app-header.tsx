@@ -2,10 +2,8 @@ import { SidebarTrigger } from "./ui/sidebar";
 
 export const AppHeader = () => {
   return (
-    <header>
-      <div className="flex h-14 shrink-0 items-center border-b px-4 gap-2 bg-background">
-        <SidebarTrigger />
-      </div>
+    <header className="flex h-14 shrink-0 items-center border-b px-4 gap-2 bg-background">
+      <SidebarTrigger />
     </header>
   );
 };
