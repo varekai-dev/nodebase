@@ -9,10 +9,10 @@ Handlebars.registerHelper("json", (context) => {
 });
 
 type HttpRequestData = {
-  endpoint: string;
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  endpoint?: string;
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
-  variableName: string;
+  variableName?: string;
 };
 
 export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
@@ -36,7 +36,7 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   }
 
   const result = await step.run("http-request", async () => {
-    const method = data.method;
+    const method = data.method || "GET";
     const endpoint = Handlebars.compile(data.endpoint)(context);
 
     const options: KyOptions = {
@@ -67,9 +67,16 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
       },
     };
 
+    if (data.variableName) {
+      return {
+        ...context,
+        [data.variableName]: responsePayload,
+      };
+    }
+
     return {
       ...context,
-      [data.variableName]: responsePayload,
+      ...responsePayload,
     };
   });
 
