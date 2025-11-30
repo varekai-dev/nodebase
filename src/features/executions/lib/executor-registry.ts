@@ -5,7 +5,7 @@ import type { NodeExecutor } from "../types";
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
-  [NodeType.HTTP_REQUEST]: httpRequestExecutor,
+  [NodeType.HTTP_REQUEST]: httpRequestExecutor, //TODO fix types
   [NodeType.INITIAL]: manualTriggerExecutor,
 };
 
