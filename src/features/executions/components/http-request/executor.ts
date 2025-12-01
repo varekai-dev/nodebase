@@ -25,24 +25,26 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
 }) => {
   await publish(httpRequestChannel().status({ nodeId, status: "loading" }));
 
-  if (!data.endpoint) {
-    await publish(httpRequestChannel().status({ nodeId, status: "error" }));
-    throw new NonRetriableError("HTTP Request: No endpoint configured");
-  }
-
-  if (!data.variableName) {
-    await publish(httpRequestChannel().status({ nodeId, status: "error" }));
-    throw new NonRetriableError("HTTP Request: No variable name configured");
-  }
-
-  if (!data.method) {
-    await publish(httpRequestChannel().status({ nodeId, status: "error" }));
-    throw new NonRetriableError("HTTP Request: No method configured");
-  }
-
   try {
     const result = await step.run("http-request", async () => {
-      const method = data.method || "GET";
+      if (!data.endpoint) {
+        await publish(httpRequestChannel().status({ nodeId, status: "error" }));
+        throw new NonRetriableError("HTTP Request: No endpoint configured");
+      }
+
+      if (!data.variableName) {
+        await publish(httpRequestChannel().status({ nodeId, status: "error" }));
+        throw new NonRetriableError(
+          "HTTP Request: No variable name configured"
+        );
+      }
+
+      if (!data.method) {
+        await publish(httpRequestChannel().status({ nodeId, status: "error" }));
+        throw new NonRetriableError("HTTP Request: No method configured");
+      }
+
+      const method = data.method;
       const endpoint = Handlebars.compile(data.endpoint)(context);
 
       const options: KyOptions = {

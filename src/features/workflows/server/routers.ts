@@ -90,14 +90,25 @@ export const workflowsRouter = createTRPCRouter({
 
         // Create new nodes
         await tx.node.createMany({
-          data: nodes.map((node) => ({
-            id: node.id,
-            workflowId: id,
-            name: node.type || "unknown",
-            type: node.type as NodeType,
-            position: node.position,
-            data: node.data || {},
-          })),
+          data: nodes.map((node) => {
+            if (!node.type) {
+              throw new Error("Node type is required");
+            }
+            // Validate and convert string to NodeType enum
+            const nodeType = Object.values(NodeType).includes(
+              node.type as NodeType
+            )
+              ? (node.type as NodeType)
+              : NodeType.INITIAL;
+            return {
+              id: node.id,
+              workflowId: id,
+              name: node.type,
+              type: nodeType,
+              position: node.position,
+              data: node.data || {},
+            };
+          }),
         });
 
         await tx.connection.createMany({
