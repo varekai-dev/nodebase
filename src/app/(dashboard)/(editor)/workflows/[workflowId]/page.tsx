@@ -10,21 +10,21 @@ import { prefetchWorkflow } from "@/features/workflows/server/prefetch";
 import { HydrateClient } from "@/trpc/server";
 
 interface PageProps {
-  params: Promise<{ workflowsId: string }>;
+  params: Promise<{ workflowId: string }>;
 }
 
 const Page = async ({ params }: PageProps) => {
-  const { workflowsId } = await params;
+  const { workflowId } = await params;
 
-  prefetchWorkflow(workflowsId);
+  prefetchWorkflow(workflowId);
 
   return (
     <HydrateClient>
       <ErrorBoundary fallback={<EditorError />}>
         <Suspense fallback={<EditorLoading />}>
-          <EditorHeader workflowId={workflowsId} />
+          <EditorHeader workflowId={workflowId} />
           <main className="flex-1">
-            <Editor workflowId={workflowsId} />
+            <Editor workflowId={workflowId} />
           </main>
         </Suspense>
       </ErrorBoundary>

@@ -1,6 +1,7 @@
 import { NonRetriableError } from "inngest";
 import toposort from "toposort";
 import type { Connection, Node } from "@/generated/prisma";
+import { inngest } from "./client";
 
 export const topologicalSort = (
   nodes: Node[],
@@ -46,4 +47,14 @@ export const topologicalSort = (
   // Map sorted node ids back to original nodes
   const nodeMap = new Map(nodes.map((node) => [node.id, node]));
   return sortedNodeIds.map((id) => nodeMap.get(id)!).filter(Boolean);
+};
+
+export const sendWorkflowExecution = async (data: {
+  workflowId: string;
+  [key: string]: any;
+}) => {
+  return inngest.send({
+    name: "workflows/execute.workflow",
+    data,
+  });
 };
