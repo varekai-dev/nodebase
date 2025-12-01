@@ -4,9 +4,13 @@ procs:
 
   prisma:
     cmd: ["npx", "prisma", "studio"]  
+
+  ngrok:
+    cmd: ["npm", "run", "ngrok:dev"]
   
   next:
     cmd: ["npm", "run", "dev"]
   
+
 
 
