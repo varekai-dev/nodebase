@@ -7,9 +7,9 @@ export const topologicalSort = (
   nodes: Node[],
   connections: Connection[]
 ): Node[] => {
-  // if no connections return node as-is (they're all independent)
+  // if no connections, return empty array (all nodes are unconnected)
   if (connections.length === 0) {
-    return nodes;
+    return [];
   }
 
   // Create edges array for toposort
@@ -24,19 +24,10 @@ export const topologicalSort = (
     connectedNodeIds.add(connection.toNodeId);
   }
 
-  for (const node of nodes) {
-    if (!connectedNodeIds.has(node.id)) {
-      edges.push([node.id, node.id]);
-    }
-  }
-
   // Perform topological sort
   let sortedNodeIds: string[];
   try {
     sortedNodeIds = toposort(edges);
-
-    //Remove duplicates (from self-edges)
-    sortedNodeIds = [...new Set(sortedNodeIds)];
   } catch (error) {
     if (error instanceof Error && error.message.includes("Cyclic")) {
       throw new NonRetriableError("Workflow contains a cyclic dependency");
@@ -44,9 +35,14 @@ export const topologicalSort = (
     throw error;
   }
 
-  // Map sorted node ids back to original nodes
+  // Map sorted node ids back to original nodes, filtering to only include connected nodes
   const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-  return sortedNodeIds.map((id) => nodeMap.get(id)!).filter(Boolean);
+  return sortedNodeIds
+    .map((id) => nodeMap.get(id))
+    .filter(
+      (node): node is Node =>
+        node !== undefined && connectedNodeIds.has(node.id)
+    );
 };
 
 export const sendWorkflowExecution = async (data: {
