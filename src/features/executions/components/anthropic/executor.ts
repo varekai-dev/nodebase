@@ -52,7 +52,7 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
   });
 
   if (!credential) {
-    throw new NonRetriableError("OpenAI: Credential not found");
+    throw new NonRetriableError("Anthropic: Credential not found");
   }
 
   const anthropic = createAnthropic({
