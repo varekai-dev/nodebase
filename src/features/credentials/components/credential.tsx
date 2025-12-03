@@ -127,8 +127,7 @@ export const CredentialForm = ({ initialData }: CredentialFormProps) => {
           <CardDescription>
             {isEdit
               ? "Update your API key or credential details"
-              : "Add a new API key or credential to your account"}{" "}
-            Credential
+              : "Add a new API key or credential to your account"}
           </CardDescription>
         </CardHeader>
         <CardContent>

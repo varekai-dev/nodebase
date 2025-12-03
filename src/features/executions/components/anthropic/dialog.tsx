@@ -138,7 +138,7 @@ export const AnthropicDialog = ({
                       disabled={isLoadingCredentials || !credentials?.length}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a type" />
+                        <SelectValue placeholder="Select a credential" />
                       </SelectTrigger>
                       <SelectContent>
                         {credentials?.map((option) => (

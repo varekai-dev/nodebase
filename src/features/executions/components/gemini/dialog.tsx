@@ -138,11 +138,11 @@ export const GeminiDialog = ({
                       disabled={isLoadingCredentials || !credentials?.length}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a type" />
+                        <SelectValue placeholder="Select a credential" />
                       </SelectTrigger>
                       <SelectContent>
                         {credentials?.map((option) => (
-                          <SelectItem key={option.id} value={option.value}>
+                          <SelectItem key={option.id} value={option.id}>
                             <div className="flex items-center gap-2">
                               <Image
                                 src="/logos/gemini.svg"
