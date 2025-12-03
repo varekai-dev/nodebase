@@ -12,6 +12,7 @@ type AnthropicNodeData = {
   systemPrompt?: string;
   userPrompt?: string;
   variableName?: string;
+  credentialId?: string;
 };
 
 type AnthropicNodeType = Node<AnthropicNodeData>;
