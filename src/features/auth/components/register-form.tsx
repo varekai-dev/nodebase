@@ -1,13 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,13 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
@@ -77,6 +77,40 @@ export const RegisterForm = () => {
       console.error(error);
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    await authClient.signIn.social(
+      {
+        provider: "google",
+      },
+      {
+        onSuccess: () => {
+          toast.success("Logged in successfully");
+          router.push("/");
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      }
+    );
+  };
+
+  const handleSignInGithub = async () => {
+    await authClient.signIn.social(
+      {
+        provider: "github",
+      },
+      {
+        onSuccess: () => {
+          toast.success("Logged in successfully");
+          router.push("/");
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      }
+    );
+  };
   return (
     <div className="flex flex-col gap-6">
       <Card>
@@ -94,6 +128,7 @@ export const RegisterForm = () => {
                     className="w-full"
                     type="button"
                     disabled={isPending}
+                    onClick={handleSignInGithub}
                   >
                     <Image
                       src="./logos/github.svg"
@@ -108,6 +143,7 @@ export const RegisterForm = () => {
                     className="w-full"
                     type="button"
                     disabled={isPending}
+                    onClick={handleGoogleSignIn}
                   >
                     <Image
                       src="./logos/google.svg"
