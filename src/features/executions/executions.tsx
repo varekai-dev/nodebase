@@ -12,16 +12,9 @@ import {
   ErrorView,
   LoadingView,
 } from "@/components/entity-components";
-import type { NodeStatus } from "@/components/react-flow/node-status-indicator";
 import { type Execution, ExecutionStatus } from "@/generated/prisma";
-import {
-  EXECUTION_CHANNEL_NAME,
-  executionChannel,
-} from "@/inngest/channels/execution";
-import { useSuspenseExecutions } from "../../hooks/use-executions";
-import { useExecutionsParams } from "../../hooks/use-executions-params";
-import { useNodeStatus } from "../../hooks/use-node-status";
-import { fetchExecutionStatusToken } from "./actions";
+import { useSuspenseExecutions } from "./hooks/use-executions";
+import { useExecutionsParams } from "./hooks/use-executions-params";
 
 export const ExecutionsList = () => {
   const executions = useSuspenseExecutions();
@@ -85,7 +78,7 @@ export const ExecutionsEmpty = () => {
   return <EmptyView message="You don't have any executions yet." />;
 };
 
-const getStatusIconByExecution = (status: ExecutionStatus) => {
+const getStatusIcon = (status: ExecutionStatus) => {
   switch (status) {
     case ExecutionStatus.SUCCESS:
       return <CheckCircle2Icon className="size-5 text-green-600" />;
@@ -94,26 +87,13 @@ const getStatusIconByExecution = (status: ExecutionStatus) => {
 
     case ExecutionStatus.RUNNING:
       return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
+
     default:
       return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
   }
 };
 
-const getStatusIconByNodeStatus = (status: NodeStatus) => {
-  switch (status) {
-    case "success":
-      return <CheckCircle2Icon className="size-5 text-green-600" />;
-    case "error":
-      return <XCircleIcon className="size-5 text-red-600" />;
-
-    case "loading":
-      return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
-    default:
-      return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
-  }
-};
-
-const formatStatus = (status: string) => {
+const formatStatus = (status: ExecutionStatus) => {
   return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 };
 
@@ -127,13 +107,6 @@ export const ExecutionItem = ({
     };
   };
 }) => {
-  const nodeStatus = useNodeStatus({
-    nodeId: data.inngestEventId,
-    channel: EXECUTION_CHANNEL_NAME,
-    topic: executionChannel().topics.status.name,
-    refreshToken: fetchExecutionStatusToken,
-  });
-
   const duration = data.completedAt
     ? Math.round(
         (new Date(data.completedAt).getTime() -
@@ -142,12 +115,6 @@ export const ExecutionItem = ({
       )
     : null;
 
-  const status = nodeStatus === "initial" ? data.status : nodeStatus;
-
-  const icon =
-    nodeStatus === "initial"
-      ? getStatusIconByExecution(data.status)
-      : getStatusIconByNodeStatus(nodeStatus);
   const subtitle = (
     <>
       {data.workflow.name} &bull; Started{" "}
@@ -158,10 +125,12 @@ export const ExecutionItem = ({
   return (
     <EntityItem
       href={`/executions/${data.id}`}
-      title={formatStatus(status)}
+      title={formatStatus(data.status)}
       subtitle={subtitle}
       image={
-        <div className="size-8 flex items-center justify-center">{icon}</div>
+        <div className="size-8 flex items-center justify-center">
+          {getStatusIcon(data.status)}
+        </div>
       }
     />
   );
