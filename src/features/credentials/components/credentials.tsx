@@ -137,8 +137,6 @@ export const CredentialItem = ({ data }: { data: Credential }) => {
     removeCredential.mutate({ id: data.id });
   };
 
-  console.log(data.type);
-
   const logo = credentialLogos[data.type] || "/logos/credential.svg";
 
   return (
