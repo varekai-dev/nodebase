@@ -1,9 +1,9 @@
+import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { oneTap } from "better-auth/plugins";
 import prisma from "@/lib/db";
 import { polarClient } from "./polar";
-import { polar, checkout, portal } from "@polar-sh/better-auth";
-import { oneTap } from "better-auth/plugins";
 
 export const auth = betterAuth({
   debug: true,
@@ -11,6 +11,10 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    },
     google: {
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
