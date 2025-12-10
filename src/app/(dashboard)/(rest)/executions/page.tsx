@@ -6,7 +6,7 @@ import {
   ExecutionsError,
   ExecutionsList,
   ExecutionsLoading,
-} from "@/features/executions/components/exeuctions/executions";
+} from "@/features/executions/executions";
 import { executionsParamsLoader } from "@/features/executions/server/params-loader";
 import { prefetchExecutions } from "@/features/executions/server/prefetch";
 import { requireAuth } from "@/lib/auth-utils";

@@ -4,7 +4,6 @@ import { ExecutionStatus, type NodeType } from "@/generated/prisma";
 import prisma from "@/lib/db";
 import { anthropicChannel } from "./channels/anthropic";
 import { discordChannel } from "./channels/discord";
-import { executionChannel } from "./channels/execution";
 import { geminiChannel } from "./channels/gemini";
 import { googleFormTriggerChannel } from "./channels/google-form-trigger";
 import { httpRequestChannel } from "./channels/http-request";
@@ -19,13 +18,7 @@ export const executeWorkflow = inngest.createFunction(
   {
     id: "execute-workflow",
     retries: process.env.NODE_ENV === "production" ? 3 : 0,
-    onFailure: async ({ event, publish }) => {
-      await publish(
-        executionChannel().status({
-          nodeId: event.data.event.id || "",
-          status: ExecutionStatus.FAILED,
-        })
-      );
+    onFailure: async ({ event }) => {
       return prisma.execution.update({
         where: { inngestEventId: event.data.event.id },
         data: {
@@ -59,12 +52,6 @@ export const executeWorkflow = inngest.createFunction(
     }
 
     await step.run("create-execution", async () => {
-      await publish(
-        executionChannel().status({
-          nodeId: inngestEventId,
-          status: "RUNNING",
-        })
-      );
       return prisma.execution.create({
         data: {
           workflowId,
@@ -114,12 +101,6 @@ export const executeWorkflow = inngest.createFunction(
     }
 
     await step.run("update-execution", async () => {
-      await publish(
-        executionChannel().status({
-          nodeId: inngestEventId,
-          status: "SUCCESS",
-        })
-      );
       return prisma.execution.update({
         where: { inngestEventId },
         data: {

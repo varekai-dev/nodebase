@@ -4,7 +4,7 @@ import { ExecutionView } from "@/features/executions/components/execution";
 import {
   ExecutionsError,
   ExecutionsLoading,
-} from "@/features/executions/components/exeuctions/executions";
+} from "@/features/executions/executions";
 import { prefetchExecution } from "@/features/executions/server/prefetch";
 import { requireAuth } from "@/lib/auth-utils";
 import { HydrateClient } from "@/trpc/server";

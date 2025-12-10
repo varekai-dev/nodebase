@@ -4,7 +4,6 @@ import { formatDistanceToNow } from "date-fns";
 import { CheckCircle2Icon, LoaderCircleIcon, XCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { NodeStatus } from "@/components/react-flow/node-status-indicator";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,15 +18,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ExecutionStatus } from "@/generated/prisma";
-import {
-  EXECUTION_CHANNEL_NAME,
-  executionChannel,
-} from "@/inngest/channels/execution";
-import { useSuspenseExecution } from "../hooks/use-executions";
-import { useNodeStatus } from "../hooks/use-node-status";
-import { fetchExecutionStatusToken } from "./exeuctions/actions";
 
-const getStatusIconByExecution = (status: ExecutionStatus) => {
+import { useSuspenseExecution } from "../hooks/use-executions";
+
+const getStatusIcon = (status: ExecutionStatus) => {
   switch (status) {
     case ExecutionStatus.SUCCESS:
       return <CheckCircle2Icon className="size-5 text-green-600" />;
@@ -36,26 +30,13 @@ const getStatusIconByExecution = (status: ExecutionStatus) => {
 
     case ExecutionStatus.RUNNING:
       return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
+
     default:
       return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
   }
 };
 
-const getStatusIconByNodeStatus = (status: NodeStatus) => {
-  switch (status) {
-    case "success":
-      return <CheckCircle2Icon className="size-5 text-green-600" />;
-    case "error":
-      return <XCircleIcon className="size-5 text-red-600" />;
-
-    case "loading":
-      return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
-    default:
-      return <LoaderCircleIcon className="size-5 text-blue-600 animate-spin" />;
-  }
-};
-
-const formatStatus = (status: string) => {
+const formatStatus = (status: ExecutionStatus) => {
   return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 };
 
@@ -71,27 +52,13 @@ export const ExecutionView = ({ executionId }: { executionId: string }) => {
       )
     : null;
 
-  const nodeStatus = useNodeStatus({
-    nodeId: execution.inngestEventId,
-    channel: EXECUTION_CHANNEL_NAME,
-    topic: executionChannel().topics.status.name,
-    refreshToken: fetchExecutionStatusToken,
-  });
-
-  const status = nodeStatus === "initial" ? execution.status : nodeStatus;
-
-  const icon =
-    nodeStatus === "initial"
-      ? getStatusIconByExecution(execution.status)
-      : getStatusIconByNodeStatus(nodeStatus);
-
   return (
     <Card className="shadow-none">
       <CardHeader>
         <div className="flex items-center gap-3">
-          {icon}
+          {getStatusIcon(execution.status)}
           <div>
-            <CardTitle>{formatStatus(status)}</CardTitle>
+            <CardTitle>{formatStatus(execution.status)}</CardTitle>
             <CardDescription>
               Execution for {execution.workflow.name}
             </CardDescription>
@@ -112,7 +79,7 @@ export const ExecutionView = ({ executionId }: { executionId: string }) => {
           </div>
           <div>
             <p className="text-sm font-medium text-muted-foreground">Status</p>
-            <p className="text-sm">{formatStatus(status)}</p>
+            <p className="text-sm">{formatStatus(execution.status)}</p>
           </div>
           <div>
             <p className="text-sm font-medium text-muted-foreground">Started</p>
